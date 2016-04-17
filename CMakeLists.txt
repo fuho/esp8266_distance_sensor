@@ -1,13 +1,54 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.2)
 project(esp8266_distance_sensor)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+include(CMakeListsPrivate.txt)
 
-set(SOURCE_FILES
-    docs/images/HC-SR04-lg.jpg
-    docs/images/official-nodemcu-development-board.jpg
-    lib/readme.txt
-    src/main.cpp
-    README.MD)
+add_definitions(-DF_CPU=80000000L)
+add_definitions(-D__ets__)
+add_definitions(-DICACHE_FLASH)
+add_definitions(-DESP8266)
+add_definitions(-DARDUINO_ARCH_ESP8266)
+add_definitions(-DARDUINO_ESP8266_ESP12)
+add_definitions(-DARDUINO=20100)
+add_definitions(-DPLATFORMIO=020806)
 
-add_executable(esp8266_distance_sensor ${SOURCE_FILES})
+add_custom_target(
+        PLATFORMIO_BUILD ALL
+        COMMAND ${PLATFORMIO_CMD} -f -c clion run
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_custom_target(
+        PLATFORMIO_UPLOAD ALL
+        COMMAND ${PLATFORMIO_CMD} -f -c clion run --target upload
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_custom_target(
+        PLATFORMIO_CLEAN ALL
+        COMMAND ${PLATFORMIO_CMD} -f -c clion run --target clean
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_custom_target(
+        PLATFORMIO_PROGRAM ALL
+        COMMAND ${PLATFORMIO_CMD} -f -c clion run --target program
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_custom_target(
+        PLATFORMIO_UPLOADFS ALL
+        COMMAND ${PLATFORMIO_CMD} -f -c clion run --target uploadfs
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_custom_target(
+        PLATFORMIO_UPDATE_ALL ALL
+        COMMAND ${PLATFORMIO_CMD} -f -c clion update
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_executable(
+        esp8266_distance_sensor
+        src/main.cpp
+)

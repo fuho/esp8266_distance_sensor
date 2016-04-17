@@ -5,3 +5,10 @@
  ![NodeMCUv2 Photo](./docs/images/official-nodemcu-development-board.jpg)
 #### HC-SR04 Ultrasonic Sensor
  ![HC-SR04](./docs/images/HC-SR04-lg.jpg)
+
+  - 20 row breadboard
+  - few cables
+
+
+### Projects Used
+ - [WiFi Manager](https://github.com/tzapu/WiFiManager)
