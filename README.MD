@@ -2,4 +2,4 @@
 
 ### Hardware
 #### NodeMCUv2
- ![NodeMCUv2 Photo](/docs/images/official-nodemcu-development-board.jpg?raw=true)
+ ![NodeMCUv2 Photo](./docs/images/official-nodemcu-development-board.jpg)
