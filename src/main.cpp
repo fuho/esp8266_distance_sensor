@@ -1,4 +1,5 @@
 #include <ESP8266WiFi.h>
+#include <ESP8266mDNS.h> // Needed by WifiManager
 #include <ArduinoOTA.h>
 #include <WiFiManager.h>
 
@@ -16,6 +17,7 @@ void post(char *payload) {
 
     if (client.connect("request.in", 80)) {
         Serial.println("*POST: Connected! Sending");
+
         client.println("POST /t27neot2 HTTP/1.1");
         client.println("Host:  requestb.in");
         client.println("User-Agent: ESP8266/1.0");
@@ -89,8 +91,8 @@ void loop() {
     ArduinoOTA.handle();
     snprintf(
             msg, 75, "{\"distance\":\"%ld\",\"battery\":\"%ld\"}",
-            (int) (9999),
-            (int) (8888)
+            (long) (9999),
+            (long) (8888)
     );
     Serial.print("Publish message: ");
     Serial.println(msg);
