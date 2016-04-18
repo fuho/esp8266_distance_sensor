@@ -12,6 +12,7 @@
 #define DELAY_LONG 100
 
 WiFiClient client;
+byte triggerTime = 10;
 
 char msg[DELAY_SHORT];
 
@@ -106,8 +107,9 @@ void loop() {
         byte incomingByte = Serial.read();
 
         // say what you got:
-        Serial.print("I received: ");
+        Serial.print("Setting trigger time to: ");
         Serial.println(incomingByte, DEC);
+        triggerTime = incomingByte;
     }
 
     digitalWrite(SENSOR_TRIGGER, LOW);
@@ -116,7 +118,7 @@ void loop() {
     digitalWrite(SENSOR3, LOW);
     delay(DELAY_LONG);
     digitalWrite(SENSOR_TRIGGER, HIGH);
-    delayMicroseconds(DELAY_SHORT);
+    delayMicroseconds(triggerTime);
     digitalWrite(SENSOR_TRIGGER, LOW);
     delay(DELAY_SHORT);
 /*
