@@ -4,9 +4,16 @@
 #include <WiFiManager.h>
 
 
+#define SENSOR_TRIGGER D0
+#define SENSOR1 D1
+#define SENSOR2 D2
+#define SENSOR3 D3
+#define DELAY_SHORT 10
+#define DELAY_LONG 100
+
 WiFiClient client;
 
-char msg[50];
+char msg[DELAY_SHORT];
 
 // Initialization
 // Sensor
@@ -34,8 +41,13 @@ void post(char *payload) {
 
 void setup() {
     // Init serial
-    Serial.begin(230400);
+    Serial.begin(115200);
     Serial.println("Booting ESP8266 Htu21d wireless sensor");
+
+    pinMode(SENSOR_TRIGGER,OUTPUT);
+    pinMode(SENSOR1,INPUT_PULLUP);
+    pinMode(SENSOR2,OUTPUT);
+    pinMode(SENSOR3,OUTPUT);
 
     // Init wifi manager
     WiFiManager wifiManager;
@@ -89,6 +101,25 @@ void setup() {
 
 void loop() {
     ArduinoOTA.handle();
+    if (Serial.available() > 0) {
+        // read the incoming byte:
+        byte incomingByte = Serial.read();
+
+        // say what you got:
+        Serial.print("I received: ");
+        Serial.println(incomingByte, DEC);
+    }
+
+    digitalWrite(SENSOR_TRIGGER, LOW);
+    digitalWrite(SENSOR1, LOW);
+    digitalWrite(SENSOR2, LOW);
+    digitalWrite(SENSOR3, LOW);
+    delay(DELAY_LONG);
+    digitalWrite(SENSOR_TRIGGER, HIGH);
+    delayMicroseconds(DELAY_SHORT);
+    digitalWrite(SENSOR_TRIGGER, LOW);
+    delay(DELAY_SHORT);
+/*
     snprintf(
             msg, 75, "{\"distance\":\"%ld\",\"battery\":\"%ld\"}",
             (long) (9999),
@@ -98,4 +129,5 @@ void loop() {
     Serial.println(msg);
     post(msg);
     delay(350);
+*/
 }
