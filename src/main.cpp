@@ -5,14 +5,14 @@
 
 
 #define SENSOR_TRIGGER D0
-#define SENSOR1 D1
-#define SENSOR2 D2
+#define SENSOR_ECHO D1
+#define SENSOR_GROUND D2
 #define SENSOR3 D3
 #define DELAY_SHORT 10
 #define DELAY_LONG 100
 
 WiFiClient client;
-byte triggerTime = 10;
+int powerUpTime = DELAY_SHORT;
 
 char msg[DELAY_SHORT];
 
@@ -45,10 +45,10 @@ void setup() {
     Serial.begin(115200);
     Serial.println("Booting ESP8266 Htu21d wireless sensor");
 
-    pinMode(SENSOR_TRIGGER,OUTPUT);
-    pinMode(SENSOR1,INPUT_PULLUP);
-    pinMode(SENSOR2,OUTPUT);
-    pinMode(SENSOR3,OUTPUT);
+    pinMode(SENSOR_TRIGGER, OUTPUT);
+    pinMode(SENSOR_ECHO, INPUT_PULLUP);
+    pinMode(SENSOR_GROUND, OUTPUT);
+    pinMode(SENSOR3, OUTPUT);
 
     // Init wifi manager
     WiFiManager wifiManager;
@@ -101,24 +101,28 @@ void setup() {
 }
 
 void loop() {
+    digitalWrite(SENSOR_TRIGGER, LOW);
+    digitalWrite(SENSOR_GROUND, HIGH);
     ArduinoOTA.handle();
     if (Serial.available() > 0) {
         // read the incoming byte:
         byte incomingByte = Serial.read();
-
-        // say what you got:
-        Serial.print("Setting trigger time to: ");
-        Serial.println(incomingByte, DEC);
-        triggerTime = incomingByte;
+        switch (incomingByte) {
+            case 43: // +
+                powerUpTime++;
+                break;
+            case 45: // -
+                powerUpTime--;
+                break;
+        }
+            Serial.print("powerUpTime: ");
+        Serial.println(powerUpTime, DEC);
     }
-
-    digitalWrite(SENSOR_TRIGGER, LOW);
-    digitalWrite(SENSOR1, LOW);
-    digitalWrite(SENSOR2, LOW);
-    digitalWrite(SENSOR3, LOW);
-    delay(DELAY_LONG);
+    delay(DELAY_SHORT);
+    digitalWrite(SENSOR_GROUND, LOW);
+    delayMicroseconds(powerUpTime);
     digitalWrite(SENSOR_TRIGGER, HIGH);
-    delayMicroseconds(triggerTime);
+    delayMicroseconds(3);
     digitalWrite(SENSOR_TRIGGER, LOW);
     delay(DELAY_SHORT);
 /*
